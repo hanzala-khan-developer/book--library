@@ -25,7 +25,7 @@ function App() {
     <BrowserRouter>
       <Navbar theme={theme} toggleTheme={toggleTheme} />
       <Routes>
-        <Route path="/" element={<Home />} />
+      <Route path="/" element={<Home theme={theme} />} />
          <Route path="/book/:id" element={<BookDetails />} />
         <Route path="/favorites" element={<Favorites />} />  
       </Routes>

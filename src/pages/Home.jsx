@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
 import BookCard from '../components/BookCard';
 
-const Home = () => {
+const Home = ({ theme }) => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
   const [searchTerm, setSearchTerm] = useState('');
-  // Ye state batayegi ke API ko kya bhejna hai (Search text ya Category keyword)
   const [activeQuery, setActiveQuery] = useState('science'); 
-  const [category, setCategory] = useState('science'); // Default category science
+  const [category, setCategory] = useState('science');
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -44,97 +43,163 @@ const Home = () => {
     };
 
     fetchBooks();
-  }, [activeQuery]); // Jab bhi activeQuery change hogi, naya data aayega
+  }, [activeQuery]);
 
-  // Jab user Search button dabaye
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim() !== '') {
       setActiveQuery(searchTerm);
-      setCategory('all'); // Search karte waqt category reset kar do
+      setCategory('all');
     }
   };
 
-  // Jab user Dropdown se Category select kare
   const handleCategoryChange = (e) => {
     const selectedCat = e.target.value;
     setCategory(selectedCat);
     
-    // Category ke hisaab se API ko naya keyword bhejo
     if (selectedCat === 'science') setActiveQuery('science');
     else if (selectedCat === 'fiction') setActiveQuery('fiction');
     else if (selectedCat === 'history') setActiveQuery('history');
     else if (selectedCat === 'biography') setActiveQuery('biography');
-    else if (selectedCat === 'all') setActiveQuery('books'); // Sab kuch dikhane ke liye
+    else if (selectedCat === 'all') setActiveQuery('books');
   };
 
- // ... (Upar ke imports aur logic same rahenge, sirf return ke andar ka code change karo)
+  const isDark = theme === 'dark';
 
   return (
-    <div className="container mt-5">
-      {/* Hero Section */}
-      <div className="text-center mb-5">
-        <h1 className="fw-bold display-5 mb-2">Explore Your Next Read</h1>
-        <p className="text-muted fs-5">Discover thousands of books from our library</p>
+    <div 
+      className="py-4 px-3 px-md-5" 
+      style={{ 
+        backgroundColor: isDark ? '#121212' : '#fcfdff', 
+        color: isDark ? '#ffffff' : '#212529',
+        minHeight: '100vh', 
+        transition: 'all 0.3s ease' 
+      }}
+    >
+      
+      {/* Editorial Header Section */}
+      <div className={`row align-items-center mb-5 pb-3 border-bottom ${isDark ? 'border-secondary' : ''}`}>
+        <div className="col-lg-8">
+          <span className={`badge px-3 py-2 rounded-pill fw-semibold mb-3 ${isDark ? 'bg-primary text-white' : 'bg-primary bg-opacity-10 text-primary'}`}>
+            📚 Digital Library Catalog
+          </span>
+          <h1 className={`fw-extrabold display-6 mb-1 ${isDark ? 'text-white' : 'text-dark'}`}>
+            Explore & Discover Reads
+          </h1>
+          <p className={isDark ? 'text-light opacity-75' : 'text-secondary'}>
+            Browse through thousands of literary masterpieces and research archives.
+          </p>
+        </div>
       </div>
       
-      {/* Search & Filter Card */}
-      <div className="row justify-content-center mb-5">
-        <div className="col-lg-10">
-          <div className="card shadow-sm border-0 rounded-4 p-3 bg-body-tertiary">
-            <div className="row g-3">
-              {/* Search Input */}
-              <div className="col-md-7">
-                <form onSubmit={handleSearch} className="d-flex gap-2">
-                  <input 
-                    type="text" 
-                    className="form-control form-control-lg fs-6 rounded-3 border-0 shadow-sm" 
-                    placeholder="🔍 Search books (e.g. Harry Potter)..." 
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                  <button type="submit" className="btn btn-dark px-4 rounded-3 shadow-sm">Search</button>
-                </form>
-              </div>
-              
-              {/* Category Dropdown */}
-              <div className="col-md-5">
-                <select 
-                  className="form-select form-select-lg fs-6 rounded-3 border-0 shadow-sm" 
-                  value={category}
-                  onChange={handleCategoryChange}
-                >
-                  <option value="all"> All Categories</option>
-                  <option value="fiction">Fiction / Novels</option>
-                  <option value="science"> Science / Tech</option>
-                  <option value="history"> History</option>
-                  <option value="biography"> Biography</option>
-                </select>
-              </div>
+      {/* Advanced Filter Toolbar */}
+      <div 
+        className="card border-0 shadow-sm rounded-4 p-4 mb-5" 
+        style={{ 
+          backgroundColor: isDark ? '#1e1e1e' : '#ffffff',
+          color: isDark ? '#ffffff' : '#000000',
+          border: isDark ? '1px solid #333' : 'none'
+        }}
+      >
+        <div className="row align-items-center gy-3">
+          
+          {/* Search Input Form */}
+          <div className="col-lg-7">
+            <form 
+              onSubmit={handleSearch} 
+              className="input-group input-group-lg shadow-sm rounded-pill overflow-hidden"
+              style={{
+                backgroundColor: isDark ? '#2b2b2b' : '#ffffff',
+                border: isDark ? '1px solid #444' : '1px solid #dee2e6'
+              }}
+            >
+              <span className="input-group-text bg-transparent border-0 ps-4 opacity-75">🔍</span>
+              <input 
+                type="text" 
+                className="form-control border-0 shadow-none fs-6 ps-2" 
+                style={{ 
+                  backgroundColor: 'transparent', 
+                  color: isDark ? '#ffffff' : '#000000' 
+                }}
+                placeholder="Search title, author or keyword..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button type="submit" className="btn btn-primary px-4 fw-medium rounded-pill m-1">
+                Search
+              </button>
+            </form>
+          </div>
+          
+          {/* Category Dropdown Selector */}
+          <div className="col-lg-5">
+            <div 
+              className="d-flex align-items-center rounded-pill px-3 py-1 shadow-sm"
+              style={{
+                backgroundColor: isDark ? '#2b2b2b' : '#ffffff',
+                border: isDark ? '1px solid #444' : '1px solid #dee2e6'
+              }}
+            >
+              <span className="small fw-bold text-uppercase me-2 text-nowrap opacity-75">Filter:</span>
+              <select 
+                className="form-select border-0 shadow-none bg-transparent fs-6 py-2" 
+                style={{ 
+                  color: isDark ? '#ffffff' : '#000000',
+                  colorScheme: isDark ? 'dark' : 'light'
+                }}
+                value={category}
+                onChange={handleCategoryChange}
+              >
+                <option value="all" style={{ backgroundColor: isDark ? '#2b2b2b' : '#ffffff' }}>🌐 All Categories</option>
+                <option value="fiction" style={{ backgroundColor: isDark ? '#2b2b2b' : '#ffffff' }}>📖 Fiction / Novels</option>
+                <option value="science" style={{ backgroundColor: isDark ? '#2b2b2b' : '#ffffff' }}>🔬 Science / Tech</option>
+                <option value="history" style={{ backgroundColor: isDark ? '#2b2b2b' : '#ffffff' }}>🏛️ History</option>
+                <option value="biography" style={{ backgroundColor: isDark ? '#2b2b2b' : '#ffffff' }}>👤 Biography</option>
+              </select>
             </div>
           </div>
+
         </div>
       </div>
 
-      {/* Loading State */}
-      {loading && <div className="text-center mt-5"><div className="spinner-border text-primary" style={{ width: '3rem', height: '3rem' }}></div></div>}
+      {/* Loading State Spinner */}
+      {loading && (
+        <div className="text-center py-5 my-5">
+          <div className="spinner-grow text-primary" style={{ width: '3.5rem', height: '3.5rem' }} role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="mt-3 fw-medium opacity-75">Gathering books for you...</p>
+        </div>
+      )}
       
-      {/* Error State */}
-      {error && <h4 className="text-center mt-5 text-danger">{error}</h4>}
+      {/* Error State Banner */}
+      {error && (
+        <div className="alert alert-danger text-center py-4 rounded-4 shadow-sm my-5" role="alert">
+          <h5 className="mb-0 text-danger fw-bold">{error}</h5>
+        </div>
+      )}
 
-      {/* Books Grid */}
+      {/* Books Dynamic Display Grid */}
       {!loading && !error && (
         books.length === 0 ? (
-          <div className="text-center mt-5 py-5">
-            <h1 className="display-1 text-muted mb-3">📭</h1>
-            <h4 className="text-muted">No books found.</h4>
-            <p className="text-muted">Try changing your search keyword or category.</p>
+          <div 
+            className="text-center py-5 my-5 rounded-4 shadow-sm p-5"
+            style={{ 
+              backgroundColor: isDark ? '#1e1e1e' : '#ffffff',
+              border: isDark ? '1px solid #333' : '1px solid #dee2e6'
+            }}
+          >
+            <div className="display-4 mb-3">📭</div>
+            <h3 className="fw-bold mb-2">No Books Discovered</h3>
+            <p className="mb-0 opacity-75">Try searching with a different term or select another category filter.</p>
           </div>
         ) : (
-          <div className="row">
+          <div className="row g-4">
             {books.map((book) => (
-              <div className="col-md-4 col-lg-3 mb-4" key={book.id}>
-                <BookCard book={book} />
+              <div className="col-sm-6 col-md-4 col-xl-3" key={book.id}>
+                <div className="h-100">
+                  <BookCard book={book} theme={theme} />
+                </div>
               </div>
             ))}
           </div>
