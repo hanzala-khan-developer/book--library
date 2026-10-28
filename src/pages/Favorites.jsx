@@ -1,11 +1,10 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { FavoriteContext } from '../context/FavoriteContext';
-import BookCard from '../components/BookCard';
+import BookCard from '../components/bookCard';
 
 const Favorites = () => {
   const { favorites } = useContext(FavoriteContext);
-
   if (favorites.length === 0) {
     return (
       <div className="container mt-5 text-center">
