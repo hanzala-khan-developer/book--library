@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import BookCard from '../components/BookCard';
+import BookCard from '../components/bookCard';
 
 const Home = ({ theme }) => {
   const [books, setBooks] = useState([]);
